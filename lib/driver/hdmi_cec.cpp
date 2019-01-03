@@ -133,6 +133,8 @@ eHdmiCEC::eHdmiCEC()
 #define HDMIDEV "/dev/hdmi_cec"
         hdmiFd = ::open("/dev/hdmi_cec", O_RDWR | O_NONBLOCK | O_CLOEXEC);
 #endif
+
+		hdmiFd = ::open(HDMIDEV, O_RDWR | O_NONBLOCK | O_CLOEXEC);
 		if (hdmiFd >= 0)
 		{
 
@@ -149,6 +151,10 @@ eHdmiCEC::eHdmiCEC()
 	{
 		messageNotifier = eSocketNotifier::create(eApp, hdmiFd, eSocketNotifier::Read | eSocketNotifier::Priority);
 		CONNECT(messageNotifier->activated, eHdmiCEC::hdmiEvent);
+	}
+	else
+	{
+		eDebug("[eHdmiCEC] cannot open %s: %m", HDMIDEV);
 	}
 
 	getAddressInfo();
